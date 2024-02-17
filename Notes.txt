@@ -1,0 +1,17 @@
+# File processing
+def format_numbers_with_leading_zeros(max_number):
+    # Calcolo la lunghezza del numero più grande per sapere quanti zeri aggiungere
+    length = len(str(max_number))
+    
+    # Creo una lista di stringhe con i numeri da 1 a max_number, inclusivo,
+    # formattati con gli zeri necessari all'inizio
+    formatted_numbers = [f"{i:0{length}d}" for i in range(1, max_number)]
+    
+    return formatted_numbers
+
+# Esempi di utilizzo della funzione
+example_4 = format_numbers_with_leading_zeros(4)
+example_17 = format_numbers_with_leading_zeros(17)
+example_2411 = format_numbers_with_leading_zeros(2411)
+
+example_4, example_17[:5], example_2411[:5]  # Mostro solo i primi 5 elementi per gli esempi più lunghi per brevità
