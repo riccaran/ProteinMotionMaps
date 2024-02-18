@@ -1,52 +1,82 @@
-# Esempio di script Python per ChimeraX per salvare immagini PNG di strutture ribbon
-
-datasets = ['antibody', 'cdk6_p16ink4a', 'frataxin', 'p16', 'stim1', 'vcb', 'vhl'] # ........
-
-# Imposta i percorsi della cartella dei file PDB e della cartella di output
-pdb_folder = 'C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/datasets/p16/pdbs'
-output_folder = 'C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/test_chimera'
-temp_path = "{}/temp".format(pdb_folder)
-
 import os
 import shutil
-
-if not os.path.exists(temp_path):
-    os.makedirs(temp_path)
-
-pdb_files = ["{}/{}".format(pdb_folder, file) for file in os.listdir(pdb_folder) if file.endswith("pdb")]
-
-for pdb_path in pdb_files:
-    pdb_file = pdb_path.split("/")[-1]
-    max_l = len(str(len(pdb_files)))
-    name, ext = pdb_file.split(".")
-    prot_name, num_file = name.split("_")
-    pdb_file_new = "{}_{}.{}".format(prot_name, num_file.rjust(max_l, '0'), ext)
-    shutil.copy(pdb_path, "{}/{}".format(temp_path,pdb_file_new))
-
-files_index = {int(file.split("/")[-1].split("_")[1].split(".")[0]) : file for file in pdb_files}
-pdb_files = [files_index[ind] for ind in sorted(files_index.keys())]
-
-# Importa il modulo di ChimeraX necessario per l'esecuzione dei comandi
 from chimerax.core.commands import run
 
-run(session, 'open {}/*.pdb'.format(temp_path))
-run(session, 'rainbow')
-run(session, 'lighting soft')
-run(session, "view pad 0")
+def get_filename(folder, pdb_file):
+    if folder == "antibody":
+        prot_name, num_file, ext = pdb_file.split(".")
 
-for ind, pdb_file in enumerate(pdb_files):
-    # Estrai il nome del file per usarlo nel nome dell'immagine PNG
-    basename = os.path.basename(pdb_file)
-    name, ext = os.path.splitext(basename)
-    png_file = os.path.join(output_folder, name + '.png')
+    elif folder == "cdk6_p16ink4a":
+        name, ext = pdb_file.split(".")
+        prot_name, num_file = name.split("A")
+        prot_name += "A"
 
-    run(session, "hide target m")
-    run(session, "show #{} models".format(ind + 1))
-    #run(session, 'preset "initial styles" "space-filling (single color)"')
-    #run(session, 'color byhetero')
-    run(session, 'save {} supersample 3'.format(png_file))
+    elif folder == "frataxin":
+        prot_name, num_ext = pdb_file.split(".")
+        ext, num_file = num_ext.split("_")
 
-run(session, "close session")
-shutil.rmtree(temp_path)
+    else:
+        prot_name, num_ext = pdb_file.split("_")
+        num_file, ext = num_ext.split(".")
+       
+    return prot_name, num_file, ext
 
-#run C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/make_dynamics_gifs.py
+
+def make_temp(folder):
+    if not os.path.exists(temp_path):
+        os.makedirs(temp_path)
+
+    if folder == "frataxin":
+        pdb_files = ["{}/{}".format(pdb_folder, file) for file in os.listdir(pdb_folder) if file.startswith("fra")]
+    else:
+        pdb_files = ["{}/{}".format(pdb_folder, file) for file in os.listdir(pdb_folder) if file.endswith("pdb")]
+
+    max_l = len(str(len(pdb_files)))
+
+    for pdb_path in pdb_files:
+        pdb_file = pdb_path.split("/")[-1]
+        prot_name, num_file, ext = get_filename(folder, pdb_file)
+        pdb_file_new = "{}_{}.{}".format(prot_name, num_file.rjust(max_l, '0'), ext)
+        shutil.copy(pdb_path, "{}/{}".format(temp_path,pdb_file_new))
+
+
+def make_moldym_frames(dataset):
+    pdb_files = sorted(os.listdir(temp_path))
+
+    run(session, 'open {}/*.pdb'.format(temp_path))
+    run(session, 'rainbow')
+    run(session, 'lighting soft')
+    run(session, "view pad 0")
+
+    for ind, pdb_file in enumerate(pdb_files):
+        basename = os.path.basename(pdb_file)
+        name, _ = os.path.splitext(basename)
+        png_file = os.path.join(output_folder, name + '.png')
+
+        run(session, "hide target m")
+        run(session, "show #{} models".format(ind + 1))
+        run(session, 'save {} supersample 3'.format(png_file))
+
+    run(session, "close session")
+
+    # Chimera X command:
+    #run C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/make_dynamics_gifs.py
+
+
+def remove_temp(folder):
+    if os.path.exists(temp_path):
+        shutil.rmtree(temp_path)
+
+
+datasets = ['antibody', 'cdk6_p16ink4a', 'frataxin', 'p16', 'stim1', 'vcb', 'vhl']
+
+for dataset in datasets:
+    pdb_folder = 'C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/datasets/{}/pdbs'.format(dataset)
+    output_folder = 'C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/output/{}/moldyn_imgs'.format(dataset)
+    #pdb_folder = 'datasets/{}/pdbs'.format(dataset)
+    #output_folder = 'output/{}/moldyn_imgs'.format(dataset)
+    temp_path = "{}/temp".format(pdb_folder)
+    
+    make_temp(dataset)
+    make_moldym_frames(dataset)
+    remove_temp(dataset)
