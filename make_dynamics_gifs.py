@@ -55,7 +55,7 @@ def make_moldym_frames(dataset):
 
         run(session, "hide target m")
         run(session, "show #{} models".format(ind + 1))
-        run(session, 'save {} supersample 3'.format(png_file))
+        run(session, 'save {} width 920 height 800 supersample 3'.format(png_file))
 
     run(session, "close session")
 

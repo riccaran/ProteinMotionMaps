@@ -135,7 +135,6 @@ def make_contact_frames(folder, edges_files, output_folder):
 
 if __name__ == "__main__":
     datasets = ['antibody', 'cdk6_p16ink4a', 'frataxin', 'p16', 'stim1', 'vcb', 'vhl']
-    datasets = ['frataxin']
     for dataset in datasets:
         edge_folder = "datasets/{}/edges".format(dataset)
         output_folder = 'output/{}/contacts_imgs'.format(dataset)
