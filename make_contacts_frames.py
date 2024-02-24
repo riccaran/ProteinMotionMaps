@@ -71,7 +71,7 @@ def process_df(data):
 
 def plot_contact_map(data, int_type, path_save, v_min, v_max, min_id, max_id):
     filtered_data = data[data['int_type'] == int_type]
-
+    
     contact_matrix = np.full((max_id - min_id + 1, max_id - min_id + 1), np.nan)
 
     for _, row in filtered_data.iterrows():
@@ -85,7 +85,7 @@ def plot_contact_map(data, int_type, path_save, v_min, v_max, min_id, max_id):
 
     plt.figure(figsize=(10, 8))
     im = plt.imshow(contact_matrix, cmap=cmap, interpolation='none', vmin=v_min, vmax=v_max)
-    plt.colorbar(im, label='Distance (Å)') ####
+    plt.colorbar(im, label='Distance (Å)')
     plt.title("{} contact map".format(int_type))
 
     ticks = np.arange(min_id, max_id + 1)
@@ -94,7 +94,7 @@ def plot_contact_map(data, int_type, path_save, v_min, v_max, min_id, max_id):
     plt.xticks(tick_positions, tick_labels)
     plt.yticks(tick_positions, tick_labels)
 
-    plt.savefig(path_save, dpi = 100)
+    plt.savefig(path_save, dpi = 100, transparent = False)
     plt.close()
 
 def get_filename(folder, pdb_file):

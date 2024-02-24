@@ -6,8 +6,7 @@ print("Importing libraries")
 import os
 import shutil
 import numpy as np
-from PIL import Image
-import imageio
+import imageio.v2 as imageio
 
 print("Defining functions")
 
@@ -17,84 +16,50 @@ def make_folder(folde_name):
 
 def remove_temp(path):
     if os.path.exists(path):
-        if os.path.isdir(path):
-            shutil.rmtree(path)
-        else:
-            os.remove(path)
+        shutil.rmtree(path)
 
-print("Starting job")
+def make_gif(cont_folder, dyn_folder):
+    cont_folder_imgs = sorted(os.listdir(cont_folder))
+    dyn_folder_imgs = sorted(os.listdir(dyn_folder))
 
-datasets = ['antibody', 'cdk6_p16ink4a', 'frataxin', 'p16', 'stim1', 'vcb', 'vhl']
-int_types = ['VDW', 'HBOND', 'PIPISTACK', 'SSBOND', 'IONIC', 'PICATION']
+    side_by_side_imgs = list()
 
-c = 1
-tot = len(datasets) * len(int_types)
+    for cont, dyn in zip(cont_folder_imgs, dyn_folder_imgs):
+        cont_img = imageio.imread("{}/{}".format(cont_folder, cont))
+        dyn_img = imageio.imread("{}/{}".format(dyn_folder, dyn))
 
-for dataset in datasets:
-    make_folder("output/{}/animations".format(dataset))
-    
-    moldyn_folder = "output/{}/moldyn_imgs".format(dataset)
-    moldym_files = {int(file.split("_")[-1].split(".")[0]) : file for file in os.listdir(moldyn_folder)}
-    moldym_files = ["{}/{}".format(moldyn_folder, moldym_files[ind]) for ind in sorted(moldym_files.keys())]
-    moldym_images = [Image.open(image) for image in moldym_files]
-    moldym_images[0].save(
-        'output/{}/moldyn.gif'.format(dataset),
-        save_all = True,
-        append_images = moldym_images[1:],
-        optimize = False,
-        duration = 100,
-        loop = 0
-        )
-    
-    for int_type in int_types:
-        # GIF maker
-        contact_folder = "output/{}/contacts_imgs/{}".format(dataset, int_type)
-        contact_files = {int(file.split("_")[-1].split(".")[0]) : file for file in os.listdir(contact_folder)}
-        contact_files = ["{}/{}".format(contact_folder, contact_files[ind]) for ind in sorted(contact_files.keys())]
-        contact_images = [Image.open(image) for image in contact_files]
-        contact_images[0].save(
-            'output/{}/contacts_{}.gif'.format(dataset, int_type),
-            save_all = True,
-            append_images = contact_images[1:],
-            optimize = False,
-            duration = 100,
-            loop = 0
-            )
+        cont_img = cont_img[..., :3]
+                
+        comb_img = np.concatenate((cont_img, dyn_img), axis = 1)
 
-        # GIF merger
-        contacts_gif = imageio.get_reader("output/{}/contacts_{}.gif".format(dataset, int_type))
-        moldyns_gif = imageio.get_reader("output/{}/moldyn.gif".format(dataset))
-        output_path = "output/{}/animations/{}_{}.gif".format(dataset, dataset, int_type)
+        side_by_side_imgs.append(comb_img)
 
-        number_of_frames = min(contacts_gif.get_length(), moldyns_gif.get_length())
-        
-        new_gif = imageio.get_writer(output_path, loop = 0)
+    imageio.mimsave("output/{}/animations/{}_{}.gif".format(dataset, dataset, int_type), side_by_side_imgs, fps = 10)
 
-        for frame_number in range(number_of_frames):
-            img1 = contacts_gif.get_data(frame_number)
-            img2 = moldyns_gif.get_data(frame_number)
 
-            if img1.shape[2] != 4:
-                img1 = np.dstack([img1, np.full(img1.shape[:2], 255, dtype=img1.dtype)])
-            if img2.shape[2] != 4:
-                img2 = np.dstack([img2, np.full(img2.shape[:2], 255, dtype=img2.dtype)])
+if __name__ == "__main__":
+    print("Starting job")
 
-            new_image = np.hstack((img1, img2))
-            new_gif.append_data(new_image)
+    datasets = ['antibody', 'cdk6_p16ink4a', 'frataxin', 'p16', 'stim1', 'vcb', 'vhl']
+    int_types = ['VDW', 'HBOND', 'PIPISTACK', 'SSBOND', 'IONIC', 'PICATION']
 
-        contacts_gif.close()
-        moldyns_gif.close()
-        new_gif.close()
+    c = 1
+    tot = len(datasets) * len(int_types)
 
-        print("{} % ({} - {})".format(round(c / tot * 100, 2), dataset, int_type))
-        c += 1
+    for dataset in datasets:
+        for int_type in int_types:
+            make_folder("output/{}/animations".format(dataset))
 
-print("Deleting folders")
+            cont_folder = "output/{}/contacts_imgs/{}".format(dataset, int_type)
+            dyn_folder = "output/{}/moldyn_imgs".format(dataset)
 
-for dataset in datasets:
-    remove_temp("output/{}/moldyn.gif".format(dataset))
-    remove_temp("output/{}/moldyn_imgs".format(dataset))
-    remove_temp("output/{}/contacts_imgs".format(dataset))
-    for int_type in int_types:
-        remove_temp("output/{}/contacts_{}.gif".format(dataset, int_type))
-    
+            make_gif(cont_folder, dyn_folder)
+
+            print("{} % ({} - {})".format(round(c / tot * 100, 2), dataset, int_type))
+            c += 1
+
+    print("Deleting folders")
+
+    for dataset in datasets:
+        remove_temp("output/{}/moldyn_imgs".format(dataset))
+        remove_temp("output/{}/contacts_imgs".format(dataset))
