@@ -1,3 +1,7 @@
-Make GIFs work (margins problem)
-Make the GIFs also for the other non-HBOND interactions
-Make a code for deleting all the temporary files in the output folder
+FLOW
+
+change name of the make contacts file
+
+1. make_contacts_gifs
+2. make_dynamics_gifs
+3. gif_maker
