@@ -34,7 +34,12 @@ def make_gif(cont_folder, dyn_folder):
 
         side_by_side_imgs.append(comb_img)
 
-    imageio.mimsave("output/{}/animations/{}_{}.gif".format(dataset, dataset, int_type), side_by_side_imgs, fps = 10)
+    imageio.mimsave(
+        "output/{}/animations/{}_{}.gif".format(dataset, dataset, int_type),
+        side_by_side_imgs,
+        fps = 10,
+        loop = 0
+        )
 
 
 if __name__ == "__main__":

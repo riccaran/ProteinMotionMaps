@@ -60,7 +60,7 @@ def make_moldym_frames(dataset):
 
         run(session, "hide target m")
         run(session, "show #{} models".format(ind + 1))
-        run(session, 'save {} width 920 height 800 supersample 3'.format(png_file))
+        run(session, 'save {} width 1380 height 1200 supersample 3'.format(png_file))
 
     run(session, "close session")
 
@@ -74,6 +74,7 @@ def remove_temp(folder):
 
 
 datasets = ['antibody', 'cdk6_p16ink4a', 'frataxin', 'p16', 'stim1', 'vcb', 'vhl']
+
 
 for dataset in datasets:
     make_folder("C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/output/{}/moldyn_imgs".format(dataset))

@@ -6,8 +6,5 @@ change name of the make contacts file
 2. make_dynamics_gifs
 3. gif_maker
 
-
 # To do
-
-Add the loop to the GIFS
 Fix the barcolor in the contact plots

@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib.colors import Normalize
 
 print("Defining functions")
 
@@ -84,8 +85,11 @@ def plot_contact_map(data, int_type, path_save, v_min, v_max, min_id, max_id):
     cmap = plt.cm.inferno.reversed()
 
     plt.figure(figsize=(10, 8))
-    im = plt.imshow(contact_matrix, cmap=cmap, interpolation='none', vmin=v_min, vmax=v_max)
+    norm = Normalize(vmin=v_min, vmax=v_max)
+    im = plt.imshow(contact_matrix, cmap=cmap, interpolation='none', norm=norm)
     plt.colorbar(im, label='Distance (Å)')
+    plt.xlabel("AA sequence")
+    plt.ylabel("AA sequence")
     plt.title("{} contact map".format(int_type))
 
     ticks = np.arange(min_id, max_id + 1)
@@ -94,7 +98,7 @@ def plot_contact_map(data, int_type, path_save, v_min, v_max, min_id, max_id):
     plt.xticks(tick_positions, tick_labels)
     plt.yticks(tick_positions, tick_labels)
 
-    plt.savefig(path_save, dpi = 100, transparent = False)
+    plt.savefig(path_save, dpi = 150, transparent = False)
     plt.close()
 
 def get_filename(folder, pdb_file):
