@@ -8,7 +8,7 @@ The code takes molecular dynamics frames (in PDB format) and contact frames (in 
 
 ![Ionic in P16](https://github.com/riccaran/structural_bioinformatics/blob/main/output/p16/animations/p16_IONIC.gif)
 
-![Van der Waals in antibody](https://github.com/riccaran/structural_bioinformatics/blob/main/output/antibody/animatios/antibody_VDW.gif)
+![Van der Waals in antibody](https://github.com/riccaran/structural_bioinformatics/blob/main/output/antibody/animations/antibody_VDW.gif)
 
 Distinct animations are made for each type of bonds, including hydrogen bonds (HBOND), π-π stackings (PIPISTACK), van der Waals interactions (VDW), and others. The left panel presents a contact map where each colored point denotes a specific bond-type between amino acid residues (the color gradient determine the distance of the interaction in ångströms), with the color gradient representing bond strength. The right panel presents 3D visualization of the protein itself, where the changing conformations and interactions are animated over the course of the simulation and can be directly compared with the changing pattern of the contact map on tthe left.
 
