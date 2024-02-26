@@ -44,10 +44,10 @@ def make_gif(cont_folder, dyn_folder):
 
 if __name__ == "__main__":
     print("Starting job")
-
+    
     datasets = ['antibody', 'cdk6_p16ink4a', 'frataxin', 'p16', 'stim1', 'vcb', 'vhl']
     int_types = ['VDW', 'HBOND', 'PIPISTACK', 'SSBOND', 'IONIC', 'PICATION']
-
+    '''
     c = 1
     tot = len(datasets) * len(int_types)
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
             c += 1
 
     print("Deleting folders")
-
+    '''
     for dataset in datasets:
         remove_temp("output/{}/moldyn_imgs".format(dataset))
         remove_temp("output/{}/contacts_imgs".format(dataset))
