@@ -16,7 +16,7 @@ Distinct animations are made for each type of bond, including hydrogen bonds (HB
 
 The code processes each frame of the molecular dynamics simulation using three different python scripts:
 1. `make_contacts_frames.py` - this Python script makes the contact maps frames
-2. `make_dynamics_frames.py` - this Python script makes the molecular dynamics animation and must be run as a ChimeraX module by using the command `run ./make_dynamics_frames.py`
+2. `make_dynamics_frames.py` - this Python script makes the molecular dynamics animation and must be run as a ChimeraX module by using the command `run /usr/local/bin/make_dynamics_frames.py`
 3. `gif_maker.py` - this Python script makes the final GIFs
 
 ## Tools Used
@@ -25,4 +25,3 @@ UCSF ChimeraX 1.7.1 (with Chimerax 1.8 Python module), Python 3.8.8, NumPy 1.23.
 
 # Structure Clusters Identification in molecular dynamics trajectories
 WIP (`work_report.pdf`)
-
