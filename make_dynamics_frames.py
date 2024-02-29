@@ -1,10 +1,11 @@
 import os
+import sys
 import shutil
 from chimerax.core.commands import run
 
-def make_folder(folde_name):
-    if not os.path.exists(folde_name):
-        os.makedirs(folde_name)
+def make_folder(folder_name):
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
 
 
 def get_filename(folder, pdb_file):
@@ -64,26 +65,25 @@ def make_moldym_frames(dataset):
 
     run(session, "close session")
 
-    # Chimera X command:
-    #run C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/make_dynamics_frames.py
-
 
 def remove_temp(folder):
-    if os.path.exists(temp_path):
-        shutil.rmtree(temp_path)
+    if os.path.exists(folder):
+        shutil.rmtree(folder)
 
 
 datasets = ['antibody', 'cdk6_p16ink4a', 'frataxin', 'p16', 'stim1', 'vcb', 'vhl']
-
+general_path = "/".join(os.path.dirname(os.path.realpath(sys.argv[0])).split("\\"))
 
 for dataset in datasets:
-    make_folder("C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/output/{}/moldyn_imgs".format(dataset))
-    pdb_folder = 'C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/datasets/{}/pdbs'.format(dataset)
-    output_folder = 'C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/output/{}/moldyn_imgs'.format(dataset)
-    #make_folder("output/{}/moldyn_imgs".format(dataset))
-    #pdb_folder = 'datasets/{}/pdbs'.format(dataset)
-    #output_folder = 'output/{}/moldyn_imgs'.format(dataset)
+    make_folder("{}/output/{}/moldyn_imgs".format(general_path, dataset))
+    pdb_folder = '{}/datasets/{}/pdbs'.format(general_path, dataset)
+    output_folder = '{}/output/{}/moldyn_imgs'.format(general_path, dataset)
     temp_path = "{}/temp".format(pdb_folder)
+    
     make_temp(dataset)
     make_moldym_frames(dataset)
-    remove_temp(dataset)
+    remove_temp(temp_path)
+
+
+# ChimeraX command:
+#run C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/make_dynamics_frames.py
