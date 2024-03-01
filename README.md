@@ -24,4 +24,4 @@ The code processes each frame of the molecular dynamics simulation using three d
 UCSF ChimeraX 1.7.1 (with Chimerax 1.8 Python module), Python 3.8.8, NumPy 1.23.5, Pandas 1.5.3, Matplotlib 3.7.1, Seaborn 0.12.2, Imageio 2.34.0
 
 # Structure Clusters Identification in molecular dynamics trajectories
-WIP (`work_report.pdf`)
+This section is fully exposed in the`work_report.pdf` file, while the code is still to be uploaded.
