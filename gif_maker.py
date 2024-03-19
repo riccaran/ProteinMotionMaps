@@ -33,6 +33,16 @@ def remove_temp(path):
         shutil.rmtree(path)
 
 def make_gif(cont_folder, dyn_folder):
+    """
+    Create a GIF by combining images from two folders side by side.
+    
+    Parameters:
+    - cont_folder: Folder path containing the first set of images.
+    - dyn_folder: Folder path containing the second set of images.
+    
+    This function reads images from the specified folders, combines each pair of images from the two folders side by side,
+    and then saves the resulting series of images as a GIF in a specified output path. The GIF is saved with a specified frame rate and loop setting.
+    """
     cont_folder_imgs = sorted(os.listdir(cont_folder))
     dyn_folder_imgs = sorted(os.listdir(dyn_folder))
 
