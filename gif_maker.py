@@ -1,3 +1,5 @@
+# Necessary packages, required for image processing and creating GIFs.
+
 # pip install imageio
 # pip install imageio[pyav]
 
@@ -11,10 +13,22 @@ import imageio.v2 as imageio
 print("Defining functions")
 
 def make_folder(folde_name):
+    """
+    Create a folder if it does not exist.
+    
+    Parameters:
+    - folder_name: The name of the folder to create.
+    """
     if not os.path.exists(folde_name):
         os.makedirs(folde_name)
 
 def remove_temp(path):
+    """
+    Remove a directory and all its contents.
+    
+    Parameters:
+    - path: The file path of the directory to remove.
+    """
     if os.path.exists(path):
         shutil.rmtree(path)
 
