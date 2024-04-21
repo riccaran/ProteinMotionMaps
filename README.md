@@ -1,6 +1,6 @@
 # Advanced Visualization of Molecular Dynamics
 
-In this project different computational techniques are used to provide a dynamic view of protein conformation and amino acid interactions in a molecular dynamic simulation or a conformational ensemble, producing an animated output to visualize the change in conformation of a protein.
+In this project different computational techniques were used to provide a dynamic view of protein conformation and amino acid interactions in molecular dynamic simulations and protein conformational ensembles, producing an animated output to visualize the dynamic interactin patterns in proteins.
 
 ## Repository Overview
 
