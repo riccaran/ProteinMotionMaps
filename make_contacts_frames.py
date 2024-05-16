@@ -1,4 +1,4 @@
-print("Importing libraries")
+# Importing necessary libraries
 import os
 import numpy as np
 import pandas as pd
@@ -6,13 +6,28 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize
 
-print("Defining functions")
+
 
 def make_folder(folde_name):
+    """
+    Creates a directory if it doesn't exist.
+
+    Parameters:
+    folder_name (str): The name of the folder to create.
+    """
     if not os.path.exists(folde_name):
         os.makedirs(folde_name)
 
 def files_indexer(dataset):
+    """
+    Indexes files for the given dataset based on its naming convention.
+
+    Parameters:
+    dataset (str): The name of the dataset.
+
+    Returns:
+    list: A list of sorted file paths for the dataset.
+    """
     datasets_edges = dict()
     edges_files = [file for file in os.listdir(edge_folder) if file.endswith("Edges")]
         
@@ -33,6 +48,15 @@ def files_indexer(dataset):
     return edges_files
 
 def process_df(data):
+    """
+    Processes the dataframe by extracting and renaming relevant columns.
+
+    Parameters:
+    data (DataFrame): The input dataframe.
+
+    Returns:
+    tuple: Two dataframes, one with interaction data and one with supplementary data.
+    """
     for ind, node_cols in enumerate(["NodeId1", "NodeId2"]):
         split_cols = data[node_cols].str.replace("_:", "").str.split(':', expand=True)
         if split_cols.shape[1] > 2:
@@ -71,6 +95,18 @@ def process_df(data):
     return rin, suppl
 
 def plot_contact_map(data, int_type, path_save, v_min, v_max, min_id, max_id):
+    """
+    Plots the contact map for a specific interaction type.
+
+    Parameters:
+    data (DataFrame): The dataframe containing interaction data.
+    int_type (str): The interaction type to filter data by.
+    path_save (str): The path where the plot will be saved.
+    v_min (float): The minimum value for normalization.
+    v_max (float): The maximum value for normalization.
+    min_id (int): The minimum sequence ID.
+    max_id (int): The maximum sequence ID.
+    """
     filtered_data = data[data['int_type'] == int_type]
     
     contact_matrix = np.full((max_id - min_id + 1, max_id - min_id + 1), np.nan)
@@ -102,6 +138,16 @@ def plot_contact_map(data, int_type, path_save, v_min, v_max, min_id, max_id):
     plt.close()
 
 def get_filename(folder, pdb_file):
+    """
+    Extracts the protein name, file number, and extension from the file name based on the folder type.
+
+    Parameters:
+    folder (str): The name of the dataset folder.
+    pdb_file (str): The PDB file name.
+
+    Returns:
+    tuple: The protein name, file number, and extension.
+    """
     if folder == "antibody":
         prot_name, num_file, ext = pdb_file.split(".")
 
@@ -122,6 +168,15 @@ def get_filename(folder, pdb_file):
     return prot_name, num_file, ext
 
 def make_seq_range(edges_files):
+    """
+    Determines the range of sequence IDs and distance values from the edge files.
+
+    Parameters:
+    edges_files (list): A list of file paths for the edge files.
+
+    Returns:
+    tuple: The minimum and maximum distance values, and the minimum and maximum sequence IDs.
+    """
     v_min = np.inf
     v_max = -np.inf
 
@@ -139,6 +194,19 @@ def make_seq_range(edges_files):
     return v_min, v_max, min_id, max_id
 
 def make_contact_frames(folder, edges_files, output_folder, int_type, v_min, v_max, min_id, max_id):
+    """
+    Generates contact map frames for each edge file.
+
+    Parameters:
+    folder (str): The name of the dataset folder.
+    edges_files (list): A list of file paths for the edge files.
+    output_folder (str): The path to save the contact maps.
+    int_type (str): The interaction type to filter data by.
+    v_min (float): The minimum value for normalization.
+    v_max (float): The maximum value for normalization.
+    min_id (int): The minimum sequence ID.
+    max_id (int): The maximum sequence ID.
+    """
     for file_path in edges_files:
         prot_name, num_file, _ = get_filename(folder, file_path.split("/")[-1])
         output = "{}/{}_{}.png".format(output_folder, prot_name, num_file)
@@ -146,15 +214,16 @@ def make_contact_frames(folder, edges_files, output_folder, int_type, v_min, v_m
         rin, _ = process_df(data)
         plot_contact_map(rin, int_type, output, v_min, v_max, min_id, max_id)
 
-print("Starting job")
-
+# Main execution starts here
 if __name__ == "__main__":
+    # Define datasets and general path
     datasets = ['antibody', 'cdk6_p16ink4a', 'frataxin', 'p16', 'stim1', 'vcb', 'vhl']
     int_types = ['VDW', 'HBOND', 'PIPISTACK', 'SSBOND', 'IONIC', 'PICATION']
 
     c = 1
     tot = len(datasets) * len(int_types)
 
+    # Process each dataset
     for dataset in datasets:
         make_folder("output/{}".format(dataset))
         make_folder("output/{}/contacts_imgs".format(dataset))

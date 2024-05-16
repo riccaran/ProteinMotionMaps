@@ -4,11 +4,27 @@ import shutil
 from chimerax.core.commands import run
 
 def make_folder(folder_name):
+    """
+    Creates a directory if it doesn't exist.
+
+    Parameters:
+    folder_name (str): The name of the folder to create.
+    """
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
 
 
 def get_filename(folder, pdb_file):
+    """
+    Extracts the protein name, file number, and extension from the file name based on the folder type.
+
+    Parameters:
+    folder (str): The name of the dataset folder.
+    pdb_file (str): The PDB file name.
+
+    Returns:
+    tuple: The protein name, file number, and extension.
+    """
     if folder == "antibody":
         prot_name, num_file, ext = pdb_file.split(".")
 
@@ -29,6 +45,12 @@ def get_filename(folder, pdb_file):
 
 
 def make_temp(folder):
+    """
+    Creates a temporary directory and copies PDB files into it with a standardized naming convention.
+
+    Parameters:
+    folder (str): The name of the dataset folder.
+    """
     if not os.path.exists(temp_path):
         os.makedirs(temp_path)
 
@@ -47,6 +69,12 @@ def make_temp(folder):
 
 
 def make_moldym_frames(dataset):
+    """
+    Generates molecular dynamics frames for each PDB file using ChimeraX.
+
+    Parameters:
+    dataset (str): The name of the dataset.
+    """
     pdb_files = sorted(os.listdir(temp_path))
 
     run(session, 'open {}/*.pdb'.format(temp_path))
@@ -67,23 +95,31 @@ def make_moldym_frames(dataset):
 
 
 def remove_temp(folder):
+    """
+    Removes the temporary directory and its contents.
+
+    Parameters:
+    folder (str): The path to the temporary folder.
+    """
     if os.path.exists(folder):
         shutil.rmtree(folder)
 
+if __name__ == "__main__":
+    # Define datasets and general path
+    datasets = ['antibody', 'cdk6_p16ink4a', 'frataxin', 'p16', 'stim1', 'vcb', 'vhl']
+    general_path = "/".join(os.path.dirname(os.path.realpath(sys.argv[0])).split("\\"))
+    # Process each dataset
 
-datasets = ['antibody', 'cdk6_p16ink4a', 'frataxin', 'p16', 'stim1', 'vcb', 'vhl']
-general_path = "/".join(os.path.dirname(os.path.realpath(sys.argv[0])).split("\\"))
-
-for dataset in datasets:
-    make_folder("{}/output/{}/moldyn_imgs".format(general_path, dataset))
-    pdb_folder = '{}/datasets/{}/pdbs'.format(general_path, dataset)
-    output_folder = '{}/output/{}/moldyn_imgs'.format(general_path, dataset)
-    temp_path = "{}/temp".format(pdb_folder)
-    
-    make_temp(dataset)
-    make_moldym_frames(dataset)
-    remove_temp(temp_path)
+    for dataset in datasets:
+        make_folder("{}/output/{}/moldyn_imgs".format(general_path, dataset))
+        pdb_folder = '{}/datasets/{}/pdbs'.format(general_path, dataset)
+        output_folder = '{}/output/{}/moldyn_imgs'.format(general_path, dataset)
+        temp_path = "{}/temp".format(pdb_folder)
+        
+        make_temp(dataset)
+        make_moldym_frames(dataset)
+        remove_temp(temp_path)
 
 
-# ChimeraX command:
-#run C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/make_dynamics_frames.py
+    # ChimeraX command:
+    #run C:/Users/Florenzio/Desktop/github_desktop/structural_bioinformatics/make_dynamics_frames.py
